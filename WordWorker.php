@@ -19,6 +19,10 @@ class WordWorker {
     private $document;
     private $properties;
     
+    private $listStyle = array();
+    private $sectionStyle = array();
+    private $textStyle = array();
+    
     private $sections = array();
     
 
@@ -26,7 +30,7 @@ class WordWorker {
      * Constructor
      * @param type $directory_path
      * path for working with generated .docx<br>
-     * Path example : .../sites/word_work_prj.by/tmp
+     * Path example : /.../sites/word_work_prj.by/tmp
      */
     public function __construct($directory_path = NULL) {
         $this->document = new  \PhpOffice\PhpWord\PhpWord();
@@ -41,7 +45,7 @@ class WordWorker {
      * Change working directory
      * @param type $word_path 
      * change path for working with .docx to this path<br> 
-     * Path example : .../sites/word_work_prj.by/tmp
+     * Path example : /.../sites/word_work_prj.by/tmp
      */
     public function setPath($word_path){
         $this->path=$word_path;
@@ -110,7 +114,7 @@ class WordWorker {
             $margin_top = 0, $margin_left = 0, $margin_right = 0,
             $cols_num = 1, $start_page_number = 0){
         
-        $sectionStyle = array(
+        $sectionNewStyle = array(
          'orientation' => $orientation,
          'marginTop' => $margin_top,
          'marginLeft' => $margin_left,
@@ -119,7 +123,7 @@ class WordWorker {
              'pageNumberingStart' => $start_page_number,
          );
         
-        $this->sections[$name_section] = $this->document->addSection($sectionStyle);
+        $this->sections[$name_section] = $this->document->addSection($sectionNewStyle);
     }
 
     /**
@@ -154,6 +158,46 @@ class WordWorker {
     }
     
     /**
+     * Set style for list items
+     * @param INT $listType
+     * TYPE SQUARE FILLED = 1<br>
+     * TYPE BULLET FILLED = 3<br>
+     * TYPE BULLET EMPTY = 5<br>
+     * TYPE NUMBER = 7<br>
+     * TYPE NUMBER NESTED = 8<br>
+     * TYPE ALPHANUM = 9
+     * @param type $font
+     * Font name (default : 'Arial')
+     * @param type $size
+     * Text size (default : 14)
+     * @param type $color
+     * Text color (default : '000000')
+     */
+    public function setListStyle($listType = 3, $font = 'Arial', $size = 14, $color = '000000'){
+        $this->listStyle['listType'] = $listType;
+        $this->listStyle['font'] = $font;
+        $this->listStyle['size'] = $size;
+        $this->listStyle['color'] = $color;
+    }
+    
+    /**
+     * Add item to list
+     * @param type $section_name
+     * Section name for adding text
+     * @param type $listItem_name
+     * Text for list item
+     * @param type $depth 
+     * Depth for list item
+     */
+    public function addListItem($section_name, $listItem_name, $depth = 0){
+        $fontStyle = array('name' => $this->listStyle['font'], 'size' => $this->listStyle['size'],
+            'color' => $this->listStyle['color']);
+        $listStyle = array('listType'=>$this->listStyle['listType']);
+        
+        $this->sections[$section_name]->addListItem($listItem_name,$depth,$fontStyle,$listStyle); 
+    }
+
+     /**
      * Save document
      * @param type $filename
      * File name<br>
@@ -183,6 +227,11 @@ class WordWorker {
         }
     }
 }
+
+
+
+
+
 
 
 

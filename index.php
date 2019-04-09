@@ -15,11 +15,23 @@ and open the template in the editor.
             $ww = new WordWorker;
             $ww->setProperties();
             $ww->addSection('first');
-            $ww->setTextToSection('first', 'Это простой текст');
+            
+            $params = ['first', 'Это простой текст'];
+            
+            $ww->setTextToSection(...$params);
+            $ww->setListStyle();
+            $ww->addListItem('first', 'Новый элемент');
+            $ww->addListItem('first', 'Новый элемент подсписка', 1);
             $ww->saveDoc('TEST_DOC', true);
         ?>
     </body>
 </html>
+
+
+
+
+
+
 
 
 
