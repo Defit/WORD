@@ -14,12 +14,14 @@ and open the template in the editor.
         <?php
             $ww = new WordWorker;
             $ww->setProperties();
-            $ww->setSection('first');
+            $ww->addSection('first');
             $ww->setTextToSection('first', 'Это простой текст');
             $ww->saveDoc('TEST_DOC', true);
         ?>
     </body>
 </html>
+
+
 
 
 
