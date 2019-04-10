@@ -27,14 +27,14 @@ and open the template in the editor.
             
             
             $ww->addSection('first');
-            
             $params = ['first', 'Это простой текст'];
             $ww->setTextToSection(...$params);
             
             $ww->addSectionDefault('two');
             $ww->setTextToSection('two', 'Вторая секция');
             
-            $ww->setSectionDefaultStyle(['portrait' => 'portrait']);
+            $ww->setSectionDefaultStyle(['orientation' => 'portrait'], ['colsNum' => 3]);
+            
             $ww->addSectionDefault('three');
             $ww->setTextToSection('three', 'Третья секция');
             $ww->setTextToSection('three', 'Третья секция 2');
@@ -47,6 +47,7 @@ and open the template in the editor.
         ?>
     </body>
 </html>
+
 
 
 
