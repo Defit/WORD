@@ -21,7 +21,7 @@ class WordWorker {
     
     private $listStyle = array();
     private $sectionStyle = array();
-    private $textStyle = array();
+    private $textStyle = [];
     
     private $sections = array();
     
@@ -71,7 +71,7 @@ class WordWorker {
      * @param type $last_modifiedBy
      * Author for last modified
      */
-    public function setProperties($author = 'Default',
+    public function setDocProperties($author = 'Default',
             $title = 'New document', $description = 'Description', 
             $subject = 'Subject', $category = 'Default', $keyWords = 'key, words',
             $company = 'Default', $last_modifiedBy = 'Default'){
@@ -90,6 +90,65 @@ class WordWorker {
         $this->properties->setModified(time());
         $this->properties->setSubject($subject);
         $this->properties->setKeywords($keyWords); 
+    }
+    
+    /**
+     * Set text style
+     * Example : setTextStyle(['name' => 'Arial'])
+     * @param type name
+     * Font name (Ex : 'Arial')
+     * @param type size
+     * Text size (Ex : 14)
+     * @param type color
+     * Text color (Ex : '000000')
+     * @param type bold
+     * Bold (true/false)
+     * @param type italic
+     * Italic (true/false)
+     * @param type align
+     * Text align (Ex : 'left')
+     * @param type spaceBefore
+     * Distance to paragraph
+     */
+    public function setTextStyle(...$args){
+        foreach ($args as $key => $value) {
+            foreach ($value as $k => $v) {
+                $this->textStyle[$k] = $v;
+            }
+        }
+    }
+
+    /**
+     * Set default style for sections<br>
+     * Example : setSectionDefaultStyle(['orientation' => 'landscape'])
+     * @param type orientation
+     * Orientation {'portrait', 'landscape'}
+     * @param type marginTop
+     * Top margin
+     * @param type marginLeft
+     * Left margin
+     * @param type marginRight
+     * Right margin
+     * @param type colsNum
+     * Number of columns
+     * @param type pageNumberingStart
+     * Number page for section
+     */
+    public function setSectionDefaultStyle(...$args){
+        foreach ($args as $key => $value) {
+            foreach ($value as $k => $v) {
+                $this->sectionStyle[$k] = $v;
+            }
+        }
+    }
+
+    /**
+     * Add new section in document with default properties
+     * @param type $name_section
+     * Name section
+     */
+    public function addSectionDefault($name_section){
+        $this->sections[$name_section] = $this->document->addSection($this->sectionStyle);
     }
     
     /**
@@ -133,26 +192,13 @@ class WordWorker {
      * Section name for adding text
      * @param type $text
      * Text for adding
-     * @param type $font
-     * Font name (default : 'Arial')
-     * @param type $size
-     * Text size (default : 14)
-     * @param type $color
-     * Text color (default : '000000')
-     * @param type $bold
-     * Bold (true/false)
-     * @param type $italic
-     * Italic (true/false)
-     * @param type $align
-     * Text align (default : 'left')
-     * @param type $spaceBefore
-     * Distance to paragraph
      */
-    public function setTextToSection($section_name, $text, $font = 'Arial', $size = 14, $color = '000000',
-            $bold = false, $italic = false, $align = 'left', $spaceBefore = 10){
+    public function setTextToSection($section_name, $text){
         
-        $fontStyle = array('name'=>$font, 'size'=>$size, 'color'=>$color, 'bold'=>$bold, 'italic'=>$italic);
-        $parStyle = array('align'=>$align,'spaceBefore'=>$spaceBefore);
+        $fontStyle = array('name' => $this->textStyle['name'], 
+            'size'=>$this->textStyle['size'], 'color'=>$this->textStyle['color'], 
+            'bold'=>$this->textStyle['bold'], 'italic'=>$this->textStyle['italic']);
+        $parStyle = array('align'=>$this->textStyle['align'],'spaceBefore'=>$this->textStyle['spaceBefore']);
         
         $this->sections[$section_name]->addText(htmlspecialchars($text), $fontStyle, $parStyle);
     }
@@ -227,6 +273,24 @@ class WordWorker {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
