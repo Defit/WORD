@@ -1,4 +1,5 @@
 <?php include_once './WordWorker.php';?>
+<?php include_once './MySQLWord.php';?>
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -43,10 +44,123 @@ and open the template in the editor.
             $ww->addListItem('first', 'Новый элемент');
             $ww->addListItem('first', 'Новый элемент подсписка', 1);
             
-            $ww->saveDoc('TEST_DOC', true);
+            $ww->setTableStyle(['borderSize' => 1], ['borderColor' => '999999'],
+                ['afterSpacing' => 0], ['Spacing' => 0], ['cellMargin' => 0]);
+            
+
+            $ww->addTableToSection('first', 'firstT');
+            
+            $cell_style = [['borderTopSize'=>1], ['borderTopColor' =>'black'],
+                 ['borderLeftSize'=>1],['borderLeftColor' =>'black'],['borderRightSize'=>1],
+                 ['borderRightColor'=>'black'],['borderBottomSize' =>1],['borderBottomColor'=>'black']];
+            $ww->setTextStyle(['spaceAfter' => 0]);
+            
+            $ww->setTableRowStyle(['exactHeight' => -5]);
+            $ww->setTableCellStyle(...$cell_style);
+            $ww->selectTable('firstT');
+            
+//            $ww->addTableRow(-0.5);
+//            $ww->addTableCell('Cell 1.1', 2500);
+//            $ww->addTableCell('Cell 1.2', 2500);
+//            $ww->addTableRow();
+//            $ww->addTableCell('Cell 2.1', 2500);
+//            $ww->addTableCell('Cell 2.2', 2500);
+            
+            $msw = new MySQLWord($ww);
+            
+            $msw->setTextStyle(['size' => '12']);
+            $msw->setTextStyle(['Color' => '#008000']);
+            $msw->setTableCellStyle(['valign' => 'center']);
+            
+            $connection_string = array(['host' => 'localhost'], 
+                ['login' => 'ugpir'], ['password' => 'J8Wti7'], 
+                ['db_name' => 'gpir']);
+            
+            $sql = "SELECT * FROM plan_stage WHERE ID > ? AND ID < ?";
+            
+            $msw->generateSelectTable($connection_string, $sql, "ii", 2, 5);
+            
+            $msw->saveDoc('TEST_DOC');
+            
+            // http://docs.mirocow.com/doku.php?id=php:docx_doc
+            // PARAMS
         ?>
     </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

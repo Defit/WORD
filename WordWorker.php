@@ -15,15 +15,21 @@ class WordWorker {
     const DEFAULT_FONT_NAME = 'Times New Roman';
     const DEFAULT_FONT_SIZE = 14;
 
-    private $path;
-    private $document;
-    private $properties;
+    protected $path;
+    protected $document;
+    protected $properties;
     
-    private $listStyle = array();
-    private $sectionStyle = array();
-    private $textStyle = [];
+    protected $listStyle = array();
+    protected $sectionStyle = array();
+    protected $textStyle = array();
+    protected $tableStyle = array();
+        protected $tableRowStyle = array();
+        protected $tableCellStyle = array();
     
-    private $sections = array();
+    protected $selectedTable;
+        
+    protected $sections = array();
+    protected $tables = array();
     
 
     /**
@@ -33,12 +39,12 @@ class WordWorker {
      * Path example : /.../sites/word_work_prj.by/tmp
      */
     public function __construct($directory_path = NULL) {
-        $this->document = new  \PhpOffice\PhpWord\PhpWord();
-        if(isset($directory_path)){
-            $this->path = $directory_path.'/';
-        }else{
-            $this->path = $_SERVER['DOCUMENT_ROOT'].'/sites/word_work_prj.by/tmp/';
-        }
+            $this->document = new  \PhpOffice\PhpWord\PhpWord();
+            if(isset($directory_path)){
+                $this->path = $directory_path.'/';
+            }else{
+                $this->path = $_SERVER['DOCUMENT_ROOT'].'/sites/word_work_prj.by/tmp/';
+            }
     }
     
     /**
@@ -111,9 +117,9 @@ class WordWorker {
      * Distance to paragraph
      */
     public function setTextStyle(...$args){
-        foreach ($args as $key => $value) {
-            foreach ($value as $k => $v) {
-                $this->textStyle[$k] = $v;
+        foreach ($args as $value) {
+            foreach ($value as $key => $v) {
+                $this->textStyle[$key] = $v;
             }
         }
     }
@@ -135,9 +141,9 @@ class WordWorker {
      * Number page for section
      */
     public function setSectionDefaultStyle(...$args){
-        foreach ($args as $key => $value) {
-            foreach ($value as $k => $v) {
-                $this->sectionStyle[$k] = $v;
+        foreach ($args as $value) {
+            foreach ($value as $key => $v) {
+                $this->sectionStyle[$key] = $v;
             }
         }
     }
@@ -242,7 +248,98 @@ class WordWorker {
         
         $this->sections[$section_name]->addListItem($listItem_name,$depth,$fontStyle,$listStyle); 
     }
-
+    
+    /**
+     * Set style for table<br>
+     * Example : setSectionDefaultStyle(['borderColor' => '999999'])
+     * @param type borderSize
+     * Border size
+     * @param type borderColor
+     * Border color
+     * @param type afterSpacing
+     * etc
+     * (https://phpword.readthedocs.io/en/latest/styles.html#table)
+     */
+    public function setTableStyle(...$args){
+        foreach ($args as $value) {
+            foreach ($value as $key => $v) {
+                $this->tableStyle[$key] = $v;
+            }
+        }
+    }
+    
+    /**
+     * Set row style
+     * @param $args
+     * (https://phpword.readthedocs.io/en/latest/styles.html#table)
+     * Example : setTableRowStyle(['exactHeight' => -5])
+     */
+    public function setTableRowStyle(...$args){
+        foreach ($args as $value) {
+            foreach ($value as $key => $v) {
+                $this->tableRowStyle[$key] = $v;
+            }
+        }
+    }
+    
+    /**
+     * Set cell style
+     * @param $args
+     * (https://phpword.readthedocs.io/en/latest/styles.html#table)
+     * Example : setTableCellStyle(['borderTopSize'=>1], ['borderTopColor' =>'black'])
+     */
+    public function setTableCellStyle(...$args){
+        foreach ($args as $value) {
+            foreach ($value as $key => $v) {
+                $this->tableCellStyle[$key] = $v;
+            }
+        }
+    }
+    
+    /**
+     * Add table to section
+     * @param type $section_name
+     * Section name
+     * @param type $table_name
+     * Table name
+     */
+    public function addTableToSection($section_name, $table_name){
+        $this->tables[$table_name] = 
+                $this->sections[$section_name]->addTable($table_name, $this->tableStyle);
+    }
+    
+    /**
+     * Select table for add cells and rows
+     * @param type $table_name
+     * Table name
+     */
+    public function selectTable($table_name){
+        $this->selectedTable = $table_name;
+    }
+    
+    /**
+     * Add row
+     * @param type $height_row
+     * Height row
+     */
+    public function addTableRow($height_row = -0.5){
+        $this->tables[$this->selectedTable]->addRow(
+                $height_row, $this->tableRowStyle);
+    }
+    
+    /**
+     * Add cell
+     * @param type $text
+     * Text to cell
+     * @param type $width
+     * Width cell
+     */
+    public function addTableCell($text, $width = 2500){
+        $this->tables[$this->selectedTable]->addCell(
+                $width, $this->tableCellStyle)->addText(
+                    $text, $this->textStyle);
+    }
+    
      /**
      * Save document
      * @param type $filename
@@ -250,7 +347,7 @@ class WordWorker {
      * Example : 'test' , '123'<br>
      * Dont writing file extension!
      * @param type $output
-     * true - file downloading to client
+     * true - file downloading to client<br>
      * false - file save to server directory
      */
     public function saveDoc($filename = 'default.docx', $output = true){
@@ -273,6 +370,22 @@ class WordWorker {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
