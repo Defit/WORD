@@ -70,16 +70,25 @@ and open the template in the editor.
             
             $msw->setTextStyle(['size' => '12']);
             $msw->setTextStyle(['Color' => '#008000']);
-            $msw->setTableCellStyle(['valign' => 'center']);
+            //$msw->setTableCellStyle(['valign' => 'center']);
+            $msw->setTableCellStyle(['valignH' => 'center']);
+            $msw->setTableRowStyle(['cantSplit' => true]);
             
             $connection_string = array(['host' => 'localhost'], 
                 ['login' => 'ugpir'], ['password' => 'J8Wti7'], 
                 ['db_name' => 'gpir']);
             
-            $sql = "SELECT * FROM plan_stage WHERE ID > ? AND ID < ?";
+            $sqlTitle =     "SELECT COLUMN_NAME 
+                            FROM INFORMATION_SCHEMA.COLUMNS 
+                            WHERE TABLE_SCHEMA = 'gpir' 
+                            AND TABLE_NAME = 'plan_stage'";
+            //$sqlTitle = "SELECT 'ID', '2', '3', '4', '5'";
             
-            $msw->generateSelectTable($connection_string, $sql, "ii", 2, 5);
+            $sql_param = "SELECT * FROM plan_stage WHERE ID > ? AND ID < ?";
+            $sql = "SELECT * FROM plan_stage";
+            //$msw->generateSelectTable($connection_string, $sqlTitle, $sql_param, "ii", 2, 5);
             
+            $msw->generateSelectTable($connection_string, $sqlTitle, $sql);
             $msw->saveDoc('TEST_DOC');
             
             // http://docs.mirocow.com/doku.php?id=php:docx_doc
@@ -87,6 +96,51 @@ and open the template in the editor.
         ?>
     </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -30,7 +30,21 @@ class MySQLWord extends WordWorker{
     /**
      * 
      * @param type $connection_string
+     * Connection string
+     * Example :<br> 
+     * $connection_string = array(['host' => 'localhost'], 
+                ['login' => '123'], ['password' => '123'], 
+                ['db_name' => 'database name']);
+     * @param type $sqlTitle
+     * FALSE - If you don't need a title<br>
+     * OR SQL TITLE<br>
+     * EXAMPLE :<br>
+     * 1) $sqlTitle = false;<br>
+     * 2) $sqlTitle = "SELECT 'NAME 1', 'NAME 2', 'NAME 3'...";<br>
+     * 3) $sqlTitle = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA..."<br>
+     * generateSelectTable($connection_string, $sqlTitle, $sql_query,...);
      * @param type $sql_query
+     * SQL query
      * @param type $params
      * The enumeration of parameters begins with a type string, 
      * followed by the values ​​of the parameters<br>
@@ -42,7 +56,7 @@ class MySQLWord extends WordWorker{
      * s - String<br>
      * b - Blob object
      */
-    public function generateSelectTable($connection_string, $sql_query, ...$params){
+    public function generateSelectTable($connection_string, $sqlTitle, $sql_query, ...$params){
         foreach ($connection_string as $value) {
             foreach ($value as $key => $v) {
                 $connection_str_parse[$key] = $v;
@@ -54,6 +68,19 @@ class MySQLWord extends WordWorker{
             die("Ошибка: не удается подключиться: " . $connection->connect_error);
             exit();
         } 
+        if($sqlTitle){
+            $result = $connection->query($sqlTitle);
+            
+            $this->addTableRow();
+            while ($row = mysqli_fetch_row($result)){
+                $cell_number = count($row); 
+                
+                for($i = 0; $i < $cell_number; $i++){
+                    $this->addTableCell($row[$i], 2500);
+                }
+            }
+        }
+        
         if(count($params) == 0){
             $result = $connection->query($sql_query);
 
@@ -93,6 +120,10 @@ class MySQLWord extends WordWorker{
         }
     }
 }
+
+
+
+
 
 
 

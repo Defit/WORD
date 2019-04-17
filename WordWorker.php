@@ -12,8 +12,8 @@ require 'vendor/autoload.php';
  * @author Defit
  */
 class WordWorker {
-    const DEFAULT_FONT_NAME = 'Times New Roman';
-    const DEFAULT_FONT_SIZE = 14;
+    public const DEFAULT_FONT_NAME = 'Times New Roman';
+    public const DEFAULT_FONT_SIZE = 14;
 
     protected $path;
     protected $document;
@@ -28,8 +28,8 @@ class WordWorker {
     
     protected $selectedTable;
         
-    protected $sections = array();
-    protected $tables = array();
+    public $sections = array();
+    public $tables = array();
     
 
     /**
@@ -200,13 +200,7 @@ class WordWorker {
      * Text for adding
      */
     public function setTextToSection($section_name, $text){
-        
-        $fontStyle = array('name' => $this->textStyle['name'], 
-            'size'=>$this->textStyle['size'], 'color'=>$this->textStyle['color'], 
-            'bold'=>$this->textStyle['bold'], 'italic'=>$this->textStyle['italic']);
-        $parStyle = array('align'=>$this->textStyle['align'],'spaceBefore'=>$this->textStyle['spaceBefore']);
-        
-        $this->sections[$section_name]->addText(htmlspecialchars($text), $fontStyle, $parStyle);
+        $this->sections[$section_name]->addText(htmlspecialchars($text), $this->textStyle);
     }
     
     /**
@@ -283,10 +277,13 @@ class WordWorker {
     }
     
     /**
-     * Set cell style
+     * Set cell style<br>
+     * (Add parameter 'valignH' = [right|left|center]<br>
+     * Parameter which is not in the phpword documentation<br>
+     * This is horisontal align in cell)
      * @param $args
      * (https://phpword.readthedocs.io/en/latest/styles.html#table)
-     * Example : setTableCellStyle(['borderTopSize'=>1], ['borderTopColor' =>'black'])
+     * Example : setTableCellStyle(['borderTopSize'=>1], ['borderTopColor' =>'black'])<br>
      */
     public function setTableCellStyle(...$args){
         foreach ($args as $value) {
@@ -335,9 +332,10 @@ class WordWorker {
      * Width cell
      */
     public function addTableCell($text, $width = 2500){
+        $alignH =['align' => $this->tableCellStyle['valignH']];
         $this->tables[$this->selectedTable]->addCell(
                 $width, $this->tableCellStyle)->addText(
-                    $text, $this->textStyle);
+                    $text, $this->textStyle, $alignH);
     }
     
      /**
@@ -370,6 +368,20 @@ class WordWorker {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
